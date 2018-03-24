@@ -1,0 +1,10 @@
+1. Check input to make sure they are 4 connected hash's.
+2. Check input to ensure they have new line after except for last one. 
+3. Check for # or '.'
+4. Must be ordered from upper left position
+						122. 
+						122. 
+						1... 
+						1...
+5. Assign capital letters to each tetrimino, starting with A. 
+6. If file contains error, must display error on stdout \n.
