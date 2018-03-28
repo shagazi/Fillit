@@ -6,18 +6,19 @@
 /*   By: shagazi <shagazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/23 21:08:36 by shagazi           #+#    #+#             */
-/*   Updated: 2018/03/24 02:48:54 by shagazi          ###   ########.fr       */
+/*   Updated: 2018/03/27 19:18:59 by shagazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static char *return_string(int fd)
+/*** assigns the string in the file to a char pointer ***/
+char *return_string(int fd)
 {
-	char buff[32];
-	char *fileread;
-	int retread;
-	char *tmp;
+	char	buff[32];
+	char	*fileread;
+	int		retread;
+	char	*tmp;
 
 	if (fd == -1)
 	{
@@ -35,66 +36,70 @@ static char *return_string(int fd)
 	return (fileread);
 }
 
-char valid_file_check(char *str)
+/* Create a function that copies the string created from return_string,
+and insert each tetrimino into an array of size (5 columns and 4 rows).
+Function should return each tetriminio into a 2d array.
+*/
+char	**tetriminoarray(char *str, int count)
+{
+	char	**arr;
+	int		k;
+	int		t;
+
+	k = 0;
+	t = 0;
+	arr = (char **)malloc(sizeof(char *) * (count + 1));
+	while (str[t] != '\0')
+	{
+		arr[k] = ft_strnew(21);
+		ft_strncpy(arr[k], &str[t], 21);
+		k++;
+		t += 21;
+	}
+	//arr = NULL; see what happens after we run checker
+	return (arr);
+}
+
+/* Checks to see if the shape passed is a valid tetrimino piece */
+int tetriminocheck(char *arr)
 {
 	int i;
-	int j; //hashtag
-	int k; //periods
-	int n; //newline
+	int count;
 
 	i = 0;
-	j = 0;
-	k = 0;
-	n = 0;
-	while (str[i] != '\0')
+	count = 0;
+	while (arr[i] != '\0')
 	{
-
-		if (str[i] == '#')
-			j++;
-		if (str[i] == '.')
-			k++;
-		if (str[i] == '\n')
-			n++;
-		ft_putchar(str[i]);
+		if (arr[i] == '#')
+		{
+			if ((i < 21 && arr[i + 1] == '#') || (i > 0 && arr[i - 1] == '#') ||
+				(i <= 16 && arr[i + 5] == '#') || (i >= 5 && arr[i - 5] == '#'))
+				count++;
+		}
 		i++;
-		if (i % 21 == 0 && i != 0)
-		{
-			if (j != 4 || k != 12 || n != 5)
-			{
-				ft_putstr("1st error");
-				ft_putnbr(i);
-				ft_putnbr(j);
-				ft_putnbr(k);
-				ft_putnbr(n);
-				return (0);
-			}
-			else
-			{
-				j = 0;
-				k = 0;
-				n = 0;
-			}
-		}
-		if (str[i] == '\n' && str[i + 1] == '\n' && str [i + 2] == '\n')
-		{
-			ft_putstr("2nd error");
-			return (0);
-		}
 	}
+	if (count == 4)
+		return (1);
 	return (0);
 }
 
-int main (int argc, char *argv[])
+/* Converts "#" to Alpha*/
+char tetriminoconvert(char *arr, int alphaiter)
 {
-	int fd;
+	int		i;
+	char	alpha;
 
-	if (argc == 2)
+	i = 0;
+	alpha = 65 + alphaiter;
+	while (arr[i] != '\0')
 	{
-		fd = open(argv[1], O_RDONLY);
-		valid_file_check(return_string(fd));
-		close(fd);
+		if (alphaiter <= 26)
+		{
+			if (arr[i] == '#')
+				arr[i] = alpha;
+			ft_putchar(arr[i]);
+		}
+		i++;
 	}
-	else
-		ft_putstr("Please enter file name.\n");
 	return (0);
 }
